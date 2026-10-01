@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+
+
+
+<html lang="th">
+
+
+
+<head>
+
+
+
+  <meta charset="UTF-8">
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+  <title>แบบประเมินความพึงพอใจ Q Dojo</title>
+
+
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+
+
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+
+
+  <style>
+
+
+
+    *{box-sizing:border-box} body{font-family:'Prompt',sans-serif;background:#eef4f4;margin:0;color:#1f2937}
+
+
+
+    .page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+
+
+
+    .card{width:100%;max-width:620px;background:#fff;border:1px solid #dfe8e7;border-radius:20px;box-shadow:0 12px 32px rgba(15,76,76,.09);overflow:hidden}
+
+
+
+    .accent{height:6px;background:#4f8f8b}.content{padding:24px 28px 26px}.head{text-align:center;margin-bottom:22px}
+
+
+
+    .head-icon{width:52px;height:52px;margin:0 auto 10px;border-radius:15px;background:#e8f3f2;color:#397b77;display:flex;align-items:center;justify-content:center;font-size:23px}
+
+
+
+    .head h1{font-size:23px;line-height:1.25;margin:0;font-weight:600}.head p{font-size:13px;color:#6b7280;margin:7px 0 0}
+
+
+
+    .field{margin-bottom:18px}.label{display:block;font-size:14px;font-weight:500;margin-bottom:8px}.required{color:#c65d5d}
+
+
+
+    .control{width:100%;border:1px solid #d4dddc;border-radius:11px;background:#fff;padding:12px 13px;font-family:'Prompt',sans-serif;font-size:14px;outline:none;transition:.2s}
+
+
+
+    .control:focus{border-color:#669e9a;box-shadow:0 0 0 3px rgba(102,158,154,.12)}
+
+
+
+    .input-wrap{position:relative}.input-wrap i{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#8b9998}.input-wrap input{padding-left:39px}
+
+
+
+    .rating{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:13px 8px;background:#f7f9f9;border:1px solid #e3e8e8;border-radius:12px}
+
+
+
+    .rating-item{text-align:center;cursor:pointer;user-select:none}.star-btn{font-size:27px;color:#cfd6d6;transition:.18s}.star-btn.active{color:#e6ad3a}.rating-item span{display:block;margin-top:5px;font-size:10px;color:#687271;white-space:nowrap}
+
+
+
+    textarea.control{resize:vertical;min-height:82px}.actions{display:flex;justify-content:center;align-items:center;margin-top:5px}
+
+
+
+    .btn{border:0;border-radius:11px;padding:12px 14px;font-family:'Prompt',sans-serif;font-weight:500;font-size:14px;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px}
+
+
+
+    .btn-save{background:#4f8f8b;color:#fff;min-width:190px}.btn-save:hover{background:#417c78}.btn-save:disabled{background:#aeb9b8;cursor:not-allowed}
+
+
+
+    .btn-pass{background:#f5f7f7;color:#426f6c;border:1px solid #ccd9d8}.btn-pass:hover{background:#eaf1f0}
+
+
+
+    @media(max-width:560px){.page{padding:12px}.content{padding:20px 16px}.head h1{font-size:20px}.rating{gap:2px;padding:12px 3px}.star-btn{font-size:24px}.rating-item span{font-size:9px}.actions{justify-content:center}.btn-save{width:min(100%,220px)}}
+
+
+
+  </style>
+
+
+
+</head>
+
+
+
+<body>
+
+
+
+  <main class="page">
+
+
+
+    <section class="card">
+
+
+
+      <div class="accent"></div>
+
+
+
+      <div class="content">
+
+
+
+        <header class="head">
+
+
+
+          <div class="head-icon"><i class="fa-regular fa-clipboard"></i></div>
+
+
+
+          <h1>แบบประเมินความพึงพอใจ Q Dojo</h1>
+
+
+
+          <p>กรุณากรอกข้อมูลเพื่อประเมินกิจกรรม</p>
+
+
+
+        </header>
+
+
+
+
+
+
+
+        <form id="surveyForm">
+
+
+
+          <div class="field">
+
+
+
+            <label class="label">รหัสพนักงาน (Emp No) <span class="required">*</span></label>
+
+
+
+            <div class="input-wrap">
+
+
+
+              <i class="fa-regular fa-id-badge"></i>
+
+
+
+              <input type="text" id="empId" class="control" required autocomplete="off" placeholder="ระบุรหัสพนักงานของคุณ...">
+
+
+
+            </div>
+
+
+
+          </div>
+
+
+
+
+
+
+
+          <div class="field">
+
+
+
+            <label class="label">1. ระดับความพึงพอใจในกิจกรรม <span class="required">*</span></label>
+
+
+
+            <div class="rating">
+
+
+
+              <div class="rating-item" onclick="setRating(1)"><i class="fa-solid fa-star star-btn" id="star1"></i><span>ปรับปรุง</span></div>
+
+
+
+              <div class="rating-item" onclick="setRating(2)"><i class="fa-solid fa-star star-btn" id="star2"></i><span>พอใช้</span></div>
+
+
+
+              <div class="rating-item" onclick="setRating(3)"><i class="fa-solid fa-star star-btn" id="star3"></i><span>ปานกลาง</span></div>
+
+
+
+              <div class="rating-item" onclick="setRating(4)"><i class="fa-solid fa-star star-btn" id="star4"></i><span>ดี</span></div>
+
+
+
+              <div class="rating-item" onclick="setRating(5)"><i class="fa-solid fa-star star-btn" id="star5"></i><span>ดีเยี่ยม</span></div>
+
+
+
+            </div>
+
+
+
+            <input type="hidden" id="score">
+
+
+
+          </div>
+
+
+
+
+
+
+
+          <div class="field">
+
+
+
+            <label class="label">2. กิจกรรมไหนที่คุณชอบที่สุด <span class="required">*</span></label>
+
+
+
+            <select id="bestActivity" class="control" required>
+
+
+
+              <option value="" selected disabled>เลือกกิจกรรมที่คุณชอบที่สุด</option>
+
+
+
+              <option value="Load Cell">1. Load Cell</option>
+
+
+
+              <option value="Air Bag Operation">2. Air Bag Operation</option>
+
+
+
+              <option value="PPE">3. PPE</option>
+
+
+
+              <option value="Plug Check">4. Plug Check</option>
+
+
+
+              <option value="Basic Electric Circuit">5. Basic Electric Circuit</option>
+
+
+
+              <option value="Build a House">6. Build a House</option>
+
+
+
+              <option value="Smart Plan, Smooth Flow">7. Smart Plan, Smooth Flow</option>
+
+
+
+              <option value="The Elevator to Hell">8. The Elevator to Hell</option>
+
+
+
+              <option value="Unsafe Act / Unsafe Condition">9. Unsafe Act / Unsafe Condition</option>
+
+
+
+            </select>
+
+
+
+          </div>
+
+
+
+
+
+
+
+          <div class="field">
+
+
+
+            <label class="label">3. ข้อเสนอแนะเพิ่มเติมทั่วไป</label>
+
+
+
+            <textarea id="feedback" class="control" rows="3" placeholder="พิมพ์ข้อเสนอแนะหรือความคิดเห็นของคุณที่นี่..."></textarea>
+
+
+
+          </div>
+
+
+
+
+
+
+
+          <div class="actions">
+
+
+
+            <button type="submit" id="submitBtn" class="btn btn-save"><i class="fa-solid fa-floppy-disk"></i>บันทึกข้อมูล</button>
+
+
+
+          </div>
+
+
+
+        </form>
+
+
+
+      </div>
+
+
+
+    </section>
+
+
+
+  </main>
+
+
+
+
+
+
+
+  <script>
+
+
+
+    let currentRating = 0;
+
+    let savedSurveyEmpNo = '';
+
+
+
+
+
+
+
+    function setRating(rating) {
+
+
+
+      currentRating = Number(rating) || 0;
+
+
+
+      document.getElementById('score').value = currentRating > 0 ? currentRating : '';
+
+
+
+      for (let i = 1; i <= 5; i++) {
+
+
+
+        document.getElementById('star' + i).classList.toggle('active', i <= currentRating);
+
+
+
+      }
+
+
+
+    }
+
+
+
+
+
+
+
+    function setSubmitLoading(isLoading) {
+
+
+
+      const btn = document.getElementById('submitBtn');
+
+
+
+      btn.disabled = isLoading;
+
+
+
+      btn.innerHTML = isLoading
+
+
+
+        ? '<i class="fa-solid fa-spinner fa-spin"></i>กำลังบันทึกข้อมูล...'
+
+
+
+        : '<i class="fa-solid fa-floppy-disk"></i>บันทึกข้อมูล';
+
+
+
+    }
+
+
+
+
+
+
+
+    function goMyEpass(empNo) {
+  const targetEmpNo=String(empNo||savedSurveyEmpNo||'').trim();
+  if(!targetEmpNo){
+    Swal.fire({icon:'warning',title:'ไม่พบรหัสพนักงาน',text:'กรุณาระบุรหัสพนักงานอีกครั้ง',confirmButtonColor:'#4f8f8b'});
+    return;
+  }
+  sessionStorage.setItem('QD_MyEpass_EmpNo',targetEmpNo);
+  window.location.href='MyEpass_Phone.html?empNo='+encodeURIComponent(targetEmpNo);
+}
+
+
+
+
+
+    document.getElementById('surveyForm').addEventListener('submit', function(e) {
+
+
+
+      e.preventDefault();
+
+
+
+
+
+
+
+      const empId = document.getElementById('empId').value.trim();
+
+
+
+      const score = document.getElementById('score').value;
+
+
+
+      const bestActivity = document.getElementById('bestActivity').value;
+
+
+
+      const feedback = document.getElementById('feedback').value.trim();
+
+
+
+
+
+
+
+      if (!empId) return Swal.fire({icon:'warning',title:'แจ้งเตือน',text:'กรุณาระบุรหัสพนักงาน',confirmButtonColor:'#4f8f8b'});
+
+
+
+      if (!score) return Swal.fire({icon:'warning',title:'แจ้งเตือน',text:'กรุณาเลือกระดับความพึงพอใจ',confirmButtonColor:'#4f8f8b'});
+
+
+
+      if (!bestActivity) return Swal.fire({icon:'warning',title:'แจ้งเตือน',text:'กรุณาเลือกกิจกรรมที่คุณชอบที่สุด',confirmButtonColor:'#4f8f8b'});
+
+
+
+
+
+
+
+      setSubmitLoading(true);
+
+
+
+
+
+
+
+      google.script.run
+
+
+
+        .withSuccessHandler(function(result) {
+
+
+
+          setSubmitLoading(false);
+
+
+
+          if (result && result.status === 'success') {
+
+
+
+            savedSurveyEmpNo = empId;
+
+
+
+              document.getElementById('surveyForm').reset();
+
+
+
+            setRating(0);
+
+
+
+
+
+
+
+            Swal.fire({
+
+
+
+              icon: 'success',
+
+
+
+              title: 'บันทึกแบบประเมินสำเร็จ',
+
+
+
+              text: 'ขอบคุณคุณ ' + (result.name || empId) + ' สำหรับการประเมิน',
+
+
+
+              showCancelButton: true,
+
+
+
+              confirmButtonText: '<i class="fa-solid fa-passport"></i>  My E-PASSPORT',
+
+
+
+              cancelButtonText: 'ปิด',
+
+
+
+              confirmButtonColor: '#4f8f8b',
+
+
+
+              cancelButtonColor: '#94a3b8',
+
+
+
+              reverseButtons: true,
+
+
+
+              allowOutsideClick: false,
+
+
+
+              allowEscapeKey: false
+
+
+
+            }).then(function(alertResult) {
+
+
+
+              if (alertResult.isConfirmed) {
+
+
+
+                goMyEpass(savedSurveyEmpNo);
+
+
+
+              } else {
+
+
+
+                document.getElementById('empId').focus();
+
+
+
+              }
+
+
+
+            });
+
+
+
+            return;
+
+
+
+          }
+
+
+
+          Swal.fire({icon:'error',title:'เกิดข้อผิดพลาด',text:result && result.message ? result.message : 'ไม่สามารถบันทึกข้อมูลได้',confirmButtonColor:'#4f8f8b'});
+
+
+
+        })
+
+
+
+        .withFailureHandler(function(error) {
+
+
+
+          setSubmitLoading(false);
+
+
+
+          console.error('Survey_saveRecord Error:', error);
+
+
+
+          Swal.fire({icon:'error',title:'เกิดข้อผิดพลาด',text:error && error.message ? error.message : 'ไม่สามารถบันทึกข้อมูลได้ กรุณาลองใหม่อีกครั้ง',confirmButtonColor:'#4f8f8b'});
+
+
+
+        })
+
+
+
+        .Survey_saveRecord(empId, Number(score), bestActivity, feedback);
+
+
+
+    });
+
+
+
+
+
+
+
+    window.addEventListener('load', function(){document.getElementById('empId').focus();});
+
+
+
+  </script>
+
+
+
+
+<script>
+const QD_API_URL="https://script.google.com/macros/s/AKfycbyk4d4plc5wYgu53N788rYSO0rkRocwLIfWOdUesAwzcIJyA1dD12B-SpY0kmlIE0qh/exec";
+function QD_api(action,params={}){
+ return new Promise((resolve,reject)=>{
+  const callback="QD_CB_"+Date.now()+"_"+Math.random().toString(36).slice(2);
+  const script=document.createElement("script");
+  const q=new URLSearchParams({action,...params,callback});
+  const timer=setTimeout(()=>done(new Error("API timeout")),15000);
+  function done(err){clearTimeout(timer);try{delete window[callback]}catch(e){}script.remove();if(err)reject(err);}
+  window[callback]=data=>{clearTimeout(timer);try{delete window[callback]}catch(e){}script.remove();resolve(data);};
+  script.onerror=()=>done(new Error("ไม่สามารถเชื่อมต่อ Q-DOJO API ได้"));
+  script.src=QD_API_URL+"?"+q.toString();document.head.appendChild(script);
+ });
+}
+(function(){
+ function run(ok,fail){return new Proxy({},{get(_,p){
+  if(p==="withSuccessHandler")return fn=>run(fn,fail);
+  if(p==="withFailureHandler")return fn=>run(ok,fn);
+  return (...a)=>{
+   if(String(p)!=="Survey_saveRecord"){const e=new Error("Unknown API method: "+String(p));if(fail)fail(e);return;}
+   QD_api("surveySave",{empNo:a[0],score:a[1],bestActivity:a[2],feedback:a[3]})
+    .then(x=>ok&&ok(x)).catch(e=>fail?fail(e):console.error(e));
+  };
+ }});}
+ window.google={script:{}};Object.defineProperty(window.google.script,"run",{get:()=>run(null,null)});
+})();
+</script>
+</body>
+
+
+
+</html>
